@@ -1,0 +1,27 @@
+name: main-guard
+
+# Branch protection is not available on the Free plan for private repositories,
+# so this check reports any commit that reached main without a pull request.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  require-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail if the commit did not come from a pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for attempt in 1 2 3; do
+            count=$(gh api "repos/${{ github.repository }}/commits/${{ github.sha }}/pulls" --jq 'length')
+            [ "$count" -gt 0 ] && exit 0
+            sleep 5
+          done
+          echo "::error::Commit ${{ github.sha }} reached main without a pull request."
+          exit 1
