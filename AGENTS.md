@@ -7,7 +7,7 @@ This file provides guidance for coding agents working in `bitflag-js`.
 `bitflag-js` is the TypeScript evaluation core and, later, the Node and browser client. It is written independently of
 `bitflag-php` from the contract in `bitflag-protocol`; both must pass the same fixtures with identical results.
 
-Design context lives in the `bitflag` repository (`docs/evaluation-and-sdk-protocol.md`, `docs/milestones/M1-protocol-and-evaluator.md`).
+Design context lives in the `bitflag` repository (`docs/evaluation-and-sdk-protocol.md`).
 
 ## Project Structure
 
@@ -34,7 +34,7 @@ Detailed rules: `.claude/rules/typescript.md` and `.claude/rules/git-workflow.md
 
 ## Commands
 
-Available once the skeleton lands (M0 step 3):
+Available once the skeleton lands:
 
 - `npm ci`
 - `npx tsc --noEmit`
