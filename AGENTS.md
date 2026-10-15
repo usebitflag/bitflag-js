@@ -16,7 +16,7 @@ bitflag-js/
 ├── src/
 │   ├── evaluation/   # evaluation order, operators, bucketing, typed results
 │   ├── protocol/     # snapshot parsing and validation
-│   └── client/ browser/ node/ telemetry/   # added later (M13)
+│   └── client/ browser/ node/ telemetry/   # SDK client modules
 ├── tests/            # Vitest
 ├── package.json      # no runtime dependencies
 └── tsconfig.json     # strict

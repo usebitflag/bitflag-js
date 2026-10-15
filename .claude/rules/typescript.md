@@ -10,7 +10,7 @@
 
 - `package.json` has no `dependencies`. Dev tooling (TypeScript, Vitest, ESLint) goes in `devDependencies`.
 - An architecture check fails if `src/evaluation` imports anything outside the package.
-- Adding a runtime dependency needs an explicit decision recorded in the `bitflag` decision register.
+- Adding a runtime dependency needs explicit approval from the maintainer first.
 
 ## Testing
 

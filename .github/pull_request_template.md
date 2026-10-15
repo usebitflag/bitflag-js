@@ -1,6 +1,6 @@
 ## What and why
 
-<!-- What changes, and why. Link the milestone step (for example M0 step 4). -->
+<!-- What changes, and why. Link the issue or document if there is one. -->
 
 ## Contracts touched
 
