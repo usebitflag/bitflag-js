@@ -1,0 +1,10 @@
+# Composer and npm ecosystems are added when the first composer.json / package.json lands.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns: ["*"]

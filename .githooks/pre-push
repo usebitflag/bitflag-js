@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Blocks direct pushes to main. Every change goes through a pull request.
+# Enable once per clone:  git config core.hooksPath .githooks
+# Emergency override:     ALLOW_MAIN_PUSH=1 git push
+while read -r _local_ref _local_sha remote_ref _remote_sha; do
+  if [ "$remote_ref" = "refs/heads/main" ] && [ "${ALLOW_MAIN_PUSH:-}" != "1" ]; then
+    echo "Direct pushes to main are blocked. Push a branch and open a pull request." >&2
+    exit 1
+  fi
+done
+exit 0
