@@ -17,7 +17,7 @@ bitflag-js/
 │   ├── evaluation/   # evaluation order, operators, bucketing, typed results
 │   ├── protocol/     # snapshot parsing and validation
 │   └── client/ browser/ node/ telemetry/   # SDK client modules
-├── tests/            # Vitest
+├── tests/            # Vitest, including tests/arch
 ├── package.json      # no runtime dependencies
 └── tsconfig.json     # strict
 ```
@@ -34,9 +34,9 @@ Detailed rules: `.claude/rules/typescript.md` and `.claude/rules/git-workflow.md
 
 ## Commands
 
-Available once the skeleton lands:
+Node 22 (see `.nvmrc`):
 
 - `npm ci`
-- `npx tsc --noEmit`
-- `npx eslint .`
-- `npx vitest run`
+- `npm run typecheck`
+- `npm run lint`
+- `npm test` (Vitest; includes the check that `src/evaluation` and `src/protocol` import nothing outside themselves)
