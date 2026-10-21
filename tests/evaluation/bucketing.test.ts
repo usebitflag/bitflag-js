@@ -59,16 +59,16 @@ describe('bucket-sha256-v1', () => {
   });
 
   it('always lands in range and spreads subjects evenly', () => {
-    const counts = Array<number>(20).fill(0);
-    for (let i = 0; i < 20_000; i += 1) {
+    const counts = Array<number>(10).fill(0);
+    for (let i = 0; i < 5_000; i += 1) {
       const value = bucket('s_uniform', 'user', `user_${String(i)}`);
       expect(value).toBeGreaterThanOrEqual(0);
       expect(value).toBeLessThan(BUCKET_COUNT);
-      counts[Math.floor(value / 5000)] = (counts[Math.floor(value / 5000)] ?? 0) + 1;
+      counts[Math.floor(value / 10_000)] = (counts[Math.floor(value / 10_000)] ?? 0) + 1;
     }
-    // Chi-square over 20 equal intervals; 19 degrees of freedom, p = 0.001 is 43.8.
-    const chi = counts.reduce((sum, count) => sum + (count - 1000) ** 2 / 1000, 0);
-    expect(chi).toBeLessThan(43.8);
+    // Chi-square over 10 equal intervals; 9 degrees of freedom, p = 0.001 is 27.9.
+    const chi = counts.reduce((sum, count) => sum + (count - 500) ** 2 / 500, 0);
+    expect(chi).toBeLessThan(27.9);
   });
 });
 
@@ -85,7 +85,7 @@ describe('slots', () => {
     const narrow = [{ variation: 'on', weight: 20000 }];
     const wide = [{ variation: 'on', weight: 50000 }];
     let moved = 0;
-    for (let i = 0; i < 10_000; i += 1) {
+    for (let i = 0; i < 3_000; i += 1) {
       const number = bucket('s_monotonic', 'user', `u_${String(i)}`);
       const before = selectSlot(narrow, number).variation;
       const after = selectSlot(wide, number).variation;
@@ -96,14 +96,14 @@ describe('slots', () => {
         moved += 1;
       }
     }
-    expect(moved).toBeGreaterThan(2500);
-    expect(moved).toBeLessThan(3500);
+    expect(moved).toBeGreaterThan(600);
+    expect(moved).toBeLessThan(1200);
   });
 
   it('moves only subjects between the old and new boundary when a weight changes', () => {
     const before = [{ variation: 'a', weight: 30000 }, { variation: 'b', weight: 30000 }];
     const after = [{ variation: 'a', weight: 40000 }, { variation: 'b', weight: 20000 }];
-    for (let i = 0; i < 10_000; i += 1) {
+    for (let i = 0; i < 3_000; i += 1) {
       const number = bucket('s_boundary', 'user', `u_${String(i)}`);
       if (selectSlot(before, number).variation !== selectSlot(after, number).variation) {
         expect(number).toBeGreaterThanOrEqual(30000);

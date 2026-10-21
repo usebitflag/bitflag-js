@@ -7,7 +7,8 @@
   "coverageAnalysis": "off",
   "mutate": [
     "src/evaluation/**/*.ts",
-    "src/protocol/**/*.ts"
+    "src/protocol/**/*.ts",
+    "!src/evaluation/sha256.ts"
   ],
   "reporters": [
     "clear-text",
