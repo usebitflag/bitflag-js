@@ -27,5 +27,46 @@ jobs:
         run: npm run typecheck
       - name: Lint
         run: npm run lint
-      - name: Tests (includes the evaluation import check)
+      - name: Fetch the pinned protocol release
+        env:
+          GH_TOKEN: ${{ secrets.PROTOCOL_READ_TOKEN }}
+        run: scripts/fetch-protocol-fixtures.sh
+      - name: Tests (unit, architecture and conformance)
         run: npm test
+
+  browser:
+    runs-on: ubuntu-latest
+    name: Conformance in a browser
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Fetch the pinned protocol release
+        env:
+          GH_TOKEN: ${{ secrets.PROTOCOL_READ_TOKEN }}
+        run: scripts/fetch-protocol-fixtures.sh
+      - name: Run the conformance suite in Chromium
+        run: npm run test:browser
+
+  mutation:
+    runs-on: ubuntu-latest
+    name: Mutation testing
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Fetch the pinned protocol release
+        env:
+          GH_TOKEN: ${{ secrets.PROTOCOL_READ_TOKEN }}
+        run: scripts/fetch-protocol-fixtures.sh
+      - name: Stryker (minimum score 85%)
+        run: |
+          export BITFLAG_PROTOCOL_DIR="$GITHUB_WORKSPACE/build/protocol/$(node -p "require('./protocol.lock.json').version")"
+          npx stryker run

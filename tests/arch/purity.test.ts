@@ -28,7 +28,9 @@ describe('evaluation and protocol stay pure', () => {
     const found = ['src/evaluation', 'src/protocol'].flatMap((dir) =>
       sourceFiles(resolve(root, dir)).flatMap((path) => {
         const file = path.slice(root.length + 1);
-        return violations(file, readFileSync(path, 'utf8'));
+        const source = readFileSync(path, 'utf8');
+        // Mutation testing instruments the sources with code that uses globals of its own.
+        return source.includes('stryNS_') ? [] : violations(file, source);
       }),
     );
     expect(found).toEqual([]);
