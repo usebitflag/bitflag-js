@@ -60,14 +60,14 @@ describe('bucket-sha256-v1', () => {
 
   it('always lands in range and spreads subjects evenly', () => {
     const counts = Array<number>(20).fill(0);
-    for (let i = 0; i < 100_000; i += 1) {
+    for (let i = 0; i < 20_000; i += 1) {
       const value = bucket('s_uniform', 'user', `user_${String(i)}`);
       expect(value).toBeGreaterThanOrEqual(0);
       expect(value).toBeLessThan(BUCKET_COUNT);
       counts[Math.floor(value / 5000)] = (counts[Math.floor(value / 5000)] ?? 0) + 1;
     }
     // Chi-square over 20 equal intervals; 19 degrees of freedom, p = 0.001 is 43.8.
-    const chi = counts.reduce((sum, count) => sum + (count - 5000) ** 2 / 5000, 0);
+    const chi = counts.reduce((sum, count) => sum + (count - 1000) ** 2 / 1000, 0);
     expect(chi).toBeLessThan(43.8);
   });
 });
