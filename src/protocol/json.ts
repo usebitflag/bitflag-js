@@ -85,7 +85,7 @@ export function decodeJson(text: string, limits: DecodeLimits = {}): Json {
   return value;
 }
 
-/** Whether a number is an integer value outside ±(2^53 - 1), however it was written. */
+/** Whether a number is not safe: an integer value outside ±(2^53 - 1), however it was written, or too large for binary64. */
 export function isUnsafeNumber(value: number): boolean {
-  return Number.isFinite(value) && Math.floor(value) === value && Math.abs(value) > MAX_SAFE_INTEGER;
+  return !Number.isFinite(value) || (Math.floor(value) === value && Math.abs(value) > MAX_SAFE_INTEGER);
 }

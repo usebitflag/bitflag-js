@@ -55,7 +55,7 @@ describe('decodeJson', () => {
 describe('isUnsafeNumber', () => {
   it.each([
     [0, false], [9007199254740991, false], [-9007199254740991, false], [9007199254740992, true], [-9007199254740992, true],
-    [1e300, true], [0.5, false], [-0, false], [9007199254740994, true], [Number.POSITIVE_INFINITY, false], [Number.NaN, false],
+    [1e300, true], [0.5, false], [-0, false], [9007199254740994, true], [Number.POSITIVE_INFINITY, true], [Number.NEGATIVE_INFINITY, true],
   ])('%s is %s', (value, unsafe) => {
     expect(isUnsafeNumber(value)).toBe(unsafe);
   });

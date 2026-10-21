@@ -2,6 +2,8 @@ const NUMBER = '(?:0|[1-9]\\d*)';
 const IDENTIFIER = '(?:0|[1-9]\\d*|\\d*[A-Za-z-][0-9A-Za-z-]*)';
 const PATTERN = new RegExp(`^(${NUMBER})\\.(${NUMBER})\\.(${NUMBER})(?:-(${IDENTIFIER}(?:\\.${IDENTIFIER})*))?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$`);
 const MAX_SAFE = '9007199254740991';
+/** Longest valid string, in bytes. Only ASCII is valid, so the length in UTF-16 units decides. */
+const MAX_LENGTH = 256;
 
 export interface SemVer {
   readonly major: number;
@@ -17,7 +19,7 @@ const withinSafeRange = (digits: string): boolean => digits.length < MAX_SAFE.le
 
 /** SemVer 2.0.0 with no `v` prefix and no partial versions, or null. Build metadata is dropped. */
 export function parseSemVer(text: string): SemVer | null {
-  const match = PATTERN.exec(text);
+  const match = text.length > MAX_LENGTH ? null : PATTERN.exec(text);
   if (match === null) {
     return null;
   }

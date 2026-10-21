@@ -227,6 +227,14 @@ export class FixtureRunner {
         failures.push(`trace: ${problem}`);
       }
     }
+    if (Array.isArray(c.expectTraceSteps)) {
+      const trace = result.trace as unknown;
+      const steps = isObject(trace) && Array.isArray(trace.steps) ? (trace.steps as unknown[]) : [];
+      const names = steps.map((step) => (isObject(step) ? step.step : null));
+      if (!same(names, c.expectTraceSteps)) {
+        failures.push(`trace steps: expected ${JSON.stringify(c.expectTraceSteps)}, got ${JSON.stringify(names)}`);
+      }
+    }
     return { fixture: fixtureId, name, failures, actual: { result: reported } };
   }
 
