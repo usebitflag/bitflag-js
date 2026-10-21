@@ -4,6 +4,10 @@ on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch:
+  # Mutation testing takes a long time, so it runs weekly and on request, not on every pull request.
+  schedule:
+    - cron: "0 3 * * 1"
 
 permissions:
   contents: read
@@ -53,8 +57,10 @@ jobs:
         run: npm run test:browser
 
   mutation:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     name: Mutation testing
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
