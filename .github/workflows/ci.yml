@@ -4,6 +4,10 @@ on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch:
+  # Mutation testing takes a long time, so it runs weekly and on request, not on every pull request.
+  schedule:
+    - cron: "0 3 * * 1"
 
 permissions:
   contents: read
@@ -27,5 +31,48 @@ jobs:
         run: npm run typecheck
       - name: Lint
         run: npm run lint
-      - name: Tests (includes the evaluation import check)
+      - name: Fetch the pinned protocol release
+        env:
+          GH_TOKEN: ${{ secrets.PROTOCOL_READ_TOKEN }}
+        run: scripts/fetch-protocol-fixtures.sh
+      - name: Tests (unit, architecture and conformance)
         run: npm test
+
+  browser:
+    runs-on: ubuntu-latest
+    name: Conformance in a browser
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Fetch the pinned protocol release
+        env:
+          GH_TOKEN: ${{ secrets.PROTOCOL_READ_TOKEN }}
+        run: scripts/fetch-protocol-fixtures.sh
+      - name: Run the conformance suite in Chromium
+        run: npm run test:browser
+
+  mutation:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    name: Mutation testing
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Fetch the pinned protocol release
+        env:
+          GH_TOKEN: ${{ secrets.PROTOCOL_READ_TOKEN }}
+        run: scripts/fetch-protocol-fixtures.sh
+      - name: Stryker (minimum score 85%)
+        run: |
+          export BITFLAG_PROTOCOL_DIR="$GITHUB_WORKSPACE/build/protocol/$(node -p "require('./protocol.lock.json').version")"
+          npx stryker run
