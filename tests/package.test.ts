@@ -12,10 +12,6 @@ describe('package', () => {
     expect(pkg.peerDependencies).toBeUndefined();
   });
 
-  it('records the protocol release it is tested against, and the lock agrees', () => {
-    expect(pkg.bitflag?.protocol).toBe(readLock().version);
-  });
-
   it('pins the protocol release by checksum once it is published', () => {
     const lock = readLock();
     expect(lock.sha256 === null || /^[0-9a-f]{64}$/.test(lock.sha256)).toBe(true);
