@@ -11,6 +11,11 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # typescript-eslint does not support TypeScript 7 yet (peer range below 6.1), so npm ci fails on it.
+    # Remove this rule once typescript-eslint supports it.
+    ignore:
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
     groups:
       npm:
         patterns: ["*"]
