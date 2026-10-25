@@ -15,6 +15,8 @@ npm run lint
 npm test
 ```
 
+Before pushing, run `npm run check`: it runs what CI runs on one Node version (typecheck, ESLint, Vitest). The browser run and mutation testing are separate CI jobs: `npm run test:browser` and Stryker.
+
 ## Conformance
 
 The evaluator is tested against the fixtures of a pinned `bitflag-protocol` release (`protocol.lock.json`).
